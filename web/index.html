@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14206B">
+<title>نظام التفقد الإلكتروني – المرحلة الأولى 2027 | الأولمبياد العلمي السوري – درعا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#14206B; --navy2:#1E2F8F; --navy-soft:#E8EBF7;
+  --gold:#F2B705; --gold-bg:#FFF6D6; --gold-dark:#8A6400;
+  --green:#2E9E5B; --green-bg:#E3F5EA; --green-line:#9BD7B2;
+  --red:#C8343B;   --red-bg:#FCE6E7;   --red-line:#EFA9AD;
+  --blue:#1E6FD9;  --blue-bg:#E4EFFD;  --blue-line:#9EC3F3;
+  --amber:#B26A00; --amber-bg:#FFF3D9;
+  --bg:#F4F6FB; --card:#FFFFFF; --text:#1B2140; --muted:#5F6787; --line:#DDE2F0;
+  --shadow:0 6px 24px rgba(20,32,107,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+.hidden{display:none!important}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+
+.topbar{background:var(--navy);color:#fff;font-size:.8rem;text-align:center;padding:5px 12px}
+header.site{background:#fff;border-bottom:3px solid var(--gold)}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
+.brand .logos{display:flex;align-items:center;gap:10px}
+.brand img{height:46px;width:auto;object-fit:contain}
+.brand .title b{display:block;color:var(--navy);font-size:1.05rem;font-weight:800;line-height:1.3}
+.brand .title span{color:var(--muted);font-size:.82rem}
+.who{font-size:.8rem;color:var(--muted);text-align:left;line-height:1.4}
+.who b{color:var(--navy)}
+
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--navy);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+nav.tabs .wrap{display:flex;gap:4px;padding:6px 16px;overflow-x:auto;align-items:center}
+nav.tabs button{flex:1;min-width:max-content;border:0;background:transparent;color:#C9D0F2;font-weight:700;padding:7px 10px;border-radius:10px;cursor:pointer;white-space:nowrap;font-size:.92rem}
+nav.tabs button.on{background:#fff;color:var(--navy)}
+.sync{position:fixed;bottom:12px;left:12px;z-index:40;font-size:.78rem;font-weight:800;border-radius:20px;padding:5px 12px;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,.18)}
+.sync.ok{background:#D4F3E0;color:#16683A}
+.sync.wait{background:#FFF0C2;color:#7A5600}
+.sync.off{background:#FCD9DB;color:#9B1F26}
+.sync.local{background:#E4E7F3;color:#3B4470}
+
+main{padding:18px 0 60px}
+h2{margin:0;font-size:1.2rem;color:var(--navy)}
+.panel{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.muted{color:var(--muted);font-size:.88rem}
+.warn{background:var(--amber-bg);color:var(--amber);border-radius:12px;padding:10px 12px;font-size:.9rem;margin-bottom:12px}
+.err{background:var(--red-bg);color:var(--red);border-radius:12px;padding:10px 12px;font-size:.9rem;margin-bottom:12px}
+
+/* ---------- الرئيسية ---------- */
+.hero-card{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.hero-card h1{margin:0;font-size:1.35rem}
+.hero-card p{margin:4px 0 0;opacity:.85;font-size:.9rem}
+.pick-title{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--navy);font-size:1.1rem;margin:4px 0 12px}
+.halls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hall-tile{background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px 12px;text-align:center;cursor:pointer;transition:.15s;box-shadow:var(--shadow)}
+.hall-tile:hover,.hall-tile:focus-visible{border-color:var(--gold);transform:translateY(-2px);outline:0}
+.hall-tile .no{font-size:2rem;font-weight:800;color:var(--navy);line-height:1.2}
+.hall-tile .lbl{font-size:.8rem;color:var(--muted)}
+.pbar{height:8px;background:var(--navy-soft);border-radius:9px;overflow:hidden;margin:10px 0 6px;display:flex}
+.pbar i{display:block;height:100%;transition:width .4s}
+.hall-tile .cnt{font-size:.8rem;color:var(--muted)}
+.done{display:inline-block;margin-top:4px;font-size:.72rem;font-weight:700;color:var(--green);background:var(--green-bg);border-radius:20px;padding:0 8px}
+
+/* ---------- القاعة ---------- */
+.hall-bar{position:sticky;top:50px;z-index:15;background:var(--bg);padding:8px 0 10px}
+.hall-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.back{border:0;background:var(--navy-soft);color:var(--navy);font-weight:700;border-radius:10px;padding:6px 12px;cursor:pointer}
+.hall-top h2{flex:1}
+.prog{display:flex;gap:6px;flex-wrap:wrap;font-size:.8rem;font-weight:700}
+.pill{border-radius:20px;padding:2px 10px}
+.pill.g{background:var(--green-bg);color:var(--green)}
+.pill.r{background:var(--red-bg);color:var(--red)}
+.pill.n{background:#fff;color:var(--muted);border:1px solid var(--line)}
+.pill.b{background:var(--blue-bg);color:var(--blue)}
+.search{display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:6px 12px;border:2px solid transparent}
+.search:focus-within{border-color:var(--gold)}
+.search svg{flex:none;color:var(--navy)}
+.search input{flex:1;border:0;outline:0;font-size:1rem;padding:8px 0;background:transparent;min-width:0}
+.search button{border:0;background:var(--navy-soft);color:var(--navy);font-weight:700;border-radius:9px;padding:4px 10px;cursor:pointer}
+.tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:3px 12px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--muted)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.spacer{flex:1}
+.btn{border:0;border-radius:12px;padding:8px 14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;justify-content:center;text-decoration:none}
+.btn.pri{background:var(--navy);color:#fff}
+.btn.gold{background:var(--gold);color:#1B2140}
+.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.btn.danger{background:var(--red-bg);color:var(--red)}
+.btn.sm{padding:5px 10px;font-size:.85rem;border-radius:10px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.sec-title{font-weight:800;color:var(--navy);margin:16px 2px 8px;font-size:.95rem;display:flex;align-items:center;gap:6px}
+.sec-title.blue{color:var(--blue)}
+.list{display:flex;flex-direction:column;gap:8px}
+.st{background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 12px;transition:background .25s,border-color .25s}
+.st.ok{background:var(--green-bg);border-color:var(--green-line)}
+.st.no{background:var(--red-bg);border-color:var(--red-line)}
+.st.blue{background:var(--blue-bg);border-color:var(--blue-line)}
+.st-row{display:flex;align-items:center;gap:10px}
+.st .idx{flex:none;width:30px;height:30px;border-radius:9px;background:var(--navy-soft);color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:.8rem}
+.st.ok .idx{background:var(--green);color:#fff}
+.st.no .idx{background:var(--red);color:#fff}
+.st.blue .idx{background:var(--blue);color:#fff}
+.st .info{flex:1;min-width:0}
+.st .nm{font-weight:800;font-size:1rem;line-height:1.35}
+.st .meta{font-size:.78rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.tag{display:inline-block;border-radius:20px;padding:0 8px;font-size:.72rem;font-weight:700}
+.alert{margin-top:6px;font-size:.82rem;font-weight:700;border-radius:9px;padding:4px 8px;background:#fff;color:var(--blue);border:1px dashed var(--blue-line)}
+.medal{margin-top:6px;font-size:.84rem;font-weight:800;border-radius:9px;padding:4px 10px;background:linear-gradient(90deg,#FFF1C1,#FFE38A);color:var(--gold-dark);border:1.5px solid #E9C04A}
+.notebadge{margin-top:6px;font-size:.8rem;font-weight:700;color:var(--amber);background:var(--amber-bg);border-radius:9px;padding:2px 8px;display:inline-block}
+.edited{margin-top:4px;font-size:.72rem;color:var(--muted)}
+.pending{color:#7A5600;font-weight:700}
+.acts{display:flex;gap:6px;flex:none}
+.acts button{border:2px solid transparent;border-radius:11px;padding:6px 12px;font-weight:800;cursor:pointer;font-size:.9rem;min-width:58px}
+.a-p{background:var(--green-bg);color:var(--green);border-color:var(--green-line)!important}
+.a-p.on{background:var(--green);color:#fff}
+.a-a{background:var(--red-bg);color:var(--red);border-color:var(--red-line)!important}
+.a-a.on{background:var(--red);color:#fff}
+.a-n{background:#fff;color:var(--muted);border-color:var(--line)!important}
+.a-n.on{background:var(--amber-bg);color:var(--amber);border-color:#F1CE85!important}
+.a-h{background:var(--blue);color:#fff}
+.a-h.on{background:var(--green);color:#fff}
+.a-del{background:transparent;color:var(--red);min-width:0!important;padding:6px!important}
+.notebox{margin-top:8px;display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:10px;padding:8px;border:1px solid var(--line)}
+.notebox select,.notebox input,.field input,.field select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;outline:0}
+.notebox select:focus,.notebox input:focus,.field input:focus,.field select:focus{border-color:var(--gold)}
+.empty{text-align:center;color:var(--muted);padding:24px;background:#fff;border-radius:14px}
+
+/* ---------- نافذة ---------- */
+.modal{position:fixed;inset:0;background:rgba(15,20,50,.5);z-index:50;display:grid;place-items:center;padding:16px}
+.modal .box{background:#fff;border-radius:18px;padding:18px;width:100%;max-width:440px;max-height:90vh;overflow:auto}
+.modal h3{margin:0 0 4px;color:var(--navy)}
+.field{margin-top:10px}
+.field label{display:block;font-weight:700;font-size:.88rem;margin-bottom:4px}
+.modal .row{display:flex;gap:8px;margin-top:16px}
+.modal .row .btn{flex:1}
+
+/* ---------- لوحة المسؤول والإحصائيات ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.kpi{background:#fff;border-radius:14px;padding:12px;box-shadow:var(--shadow);border-top:4px solid var(--navy)}
+.kpi b{display:block;font-size:1.6rem;font-weight:800;line-height:1.2}
+.kpi span{font-size:.8rem;color:var(--muted)}
+.kpi.g{border-color:var(--green)} .kpi.g b{color:var(--green)}
+.kpi.r{border-color:var(--red)} .kpi.r b{color:var(--red)}
+.kpi.b{border-color:var(--blue)} .kpi.b b{color:var(--blue)}
+.kpi.y{border-color:var(--gold)}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:800;color:var(--red)}
+.live i{width:9px;height:9px;border-radius:50%;background:var(--red);animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hcard{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px;border:2px solid var(--line);cursor:pointer}
+.hcard:hover{border-color:var(--gold)}
+.hcard .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.hcard .top b{font-size:1.15rem;color:var(--navy)}
+.hcard .big{font-size:1.5rem;font-weight:800;color:var(--navy)}
+.hcard .pbar{height:12px}
+.hcard .nums{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;gap:6px;flex-wrap:wrap}
+.hcard .last{font-size:.75rem;color:var(--muted);margin-top:6px}
+.feed{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow:auto}
+.feed div{display:flex;gap:8px;align-items:center;font-size:.85rem;background:var(--bg);border-radius:10px;padding:6px 10px}
+.feed .tm{color:var(--muted);font-size:.75rem;flex:none}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--navy-soft);color:var(--navy);font-weight:800}
+tfoot td{font-weight:800;background:#FAFBFE}
+td.g{color:var(--green);font-weight:700} td.r{color:var(--red);font-weight:700} td.b{color:var(--blue);font-weight:700}
+canvas#chart{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:#fff;display:block}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;z-index:60;font-weight:700;box-shadow:var(--shadow);max-width:92vw;text-align:center}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px 16px 30px}
+
+@media (max-width:640px){
+  .halls,.hgrid{grid-template-columns:repeat(2,1fr)}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .st-row{flex-wrap:wrap}
+  .acts{width:100%}
+  .acts button{flex:1;padding:8px 6px}
+  .a-del{flex:0 0 auto!important}
+  .brand img.side{display:none}
+}
+@media (max-width:420px){ .hgrid{grid-template-columns:1fr} }
+
+/* ---------- الطباعة ---------- */
+#print{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff}
+  body>*:not(#print){display:none!important}
+  #print{display:block;font-size:11pt;color:#000}
+  #print h1{font-size:16pt;margin:0;color:var(--navy)}
+  #print h2{font-size:13pt;margin:16px 0 6px;color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:3px}
+  #print table{font-size:9.5pt}
+  #print th,#print td{padding:4px 6px;border:1px solid #BFC6DA;white-space:normal}
+  #print th{background:#E8EBF7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print img{width:100%;max-width:100%;page-break-inside:avoid}
+  #print .p-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--navy);padding-bottom:6px;margin-bottom:8px}
+  #print .sig{display:flex;justify-content:space-between;margin-top:30px;font-weight:700}
+  #print tr{page-break-inside:avoid}
+  #print .pb{page-break-before:always}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">اختبارات المرحلة الأولى | الأولمبياد العلمي السوري 2027 | محافظة درعا</div>
+<header class="site">
+  <div class="wrap brand">
+    <div class="logos">
+      <img src="https://olympiad-daraa.onrender.com/media/site/66_1.webp" alt="الأولمبياد العلمي السوري" onerror="this.style.display='none'">
+      <div class="title">
+        <b>نظام التفقد الإلكتروني</b>
+        <span>مكتب الأولمبياد العلمي السوري – درعا</span>
+      </div>
+    </div>
+    <div class="who" id="who"></div>
+  </div>
+</header>
+
+<nav class="tabs"><div class="wrap">
+  <button data-tab="home" class="on">📋 التفقد</button>
+  <button data-tab="admin" class="adm hidden">🛰️ لوحة المسؤول</button>
+  <button data-tab="stats" class="adm hidden">📊 الإحصائيات</button>
+  <button data-tab="reports" class="adm hidden">📄 التقارير</button>
+  <button data-tab="settings">⚙️</button>
+</div></nav>
+
+<main class="wrap">
+  <div id="banner"></div>
+
+  <!-- الرئيسية -->
+  <section id="v-home">
+    <div class="hero-card">
+      <h1>نظام أخذ التفقد الإلكتروني</h1>
+      <p>المركز الامتحاني: جامعة درعا – كلية التربية الثالثة</p>
+    </div>
+    <div class="panel">
+      <div class="pick-title">🏫 تفقد القاعات – اختر القاعة</div>
+      <div id="hall-tiles" class="halls"><div class="loading">جارٍ التحميل…</div></div>
+    </div>
+  </section>
+
+  <!-- القاعة -->
+  <section id="v-hall" class="hidden">
+    <div class="hall-bar">
+      <div class="hall-top">
+        <button class="back" data-tab="home">→ القاعات</button>
+        <h2 id="h-title"></h2>
+        <div id="h-prog" class="prog"></div>
+      </div>
+      <div class="search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="hq" type="search" placeholder="ابحث بالاسم أو الاسم الثلاثي أو الرقم الامتحاني…" autocomplete="off">
+        <button id="hq-clear" class="hidden" type="button">مسح</button>
+      </div>
+      <div class="tools">
+        <button class="chip on" data-f="all">الكل</button>
+        <button class="chip" data-f="un">لم يُتفقد</button>
+        <button class="chip" data-f="p">حاضر</button>
+        <button class="chip" data-f="a">غائب</button>
+        <span class="spacer"></span>
+        <button class="btn gold sm" id="btn-add">＋ إضافة طالب (تقديم شرطي)</button>
+        <button class="btn pri sm" id="btn-finish">✔ إنهاء التفقد</button>
+      </div>
+    </div>
+    <div id="h-list"></div>
+  </section>
+
+  <!-- لوحة المسؤول -->
+  <section id="v-admin" class="hidden">
+    <div class="panel-head"><h2>🛰️ متابعة التفقد لحظياً</h2><span class="live"><i></i> مباشر</span></div>
+    <div id="a-kpis" class="kpis"></div>
+    <div id="a-halls" class="hgrid"></div>
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-head"><h2>آخر العمليات</h2><span class="muted" id="a-feed-n"></span></div>
+      <div id="a-feed" class="feed"></div>
+    </div>
+  </section>
+
+  <!-- الإحصائيات -->
+  <section id="v-stats" class="hidden">
+    <div id="stats-note" class="warn"></div>
+    <div id="kpis" class="kpis"></div>
+    <div class="panel">
+      <div class="panel-head"><h2>المخطط البياني</h2><button class="btn ghost sm" id="btn-png">🖼️ تصدير كصورة</button></div>
+      <canvas id="chart" width="1200" height="820"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>الإحصائيات حسب القاعة</h2></div>
+      <div id="hall-table"></div>
+      <p class="muted" style="margin:8px 2px 0">«الكلي» و«الحضور» و«الغياب» محسوبة حسب القاعة الأصلية للطالب. «حاضرون فعلياً» = عدد الجالسين في القاعة بما فيهم القادمون من قاعات أخرى. من لم يُسجَّل له حضور يُحسب غائباً.</p>
+    </div>
+  </section>
+
+  <!-- التقارير -->
+  <section id="v-reports" class="hidden">
+    <div class="panel">
+      <div class="panel-head"><h2>📄 التقارير</h2></div>
+      <div class="actions">
+        <button class="btn pri" id="btn-print">🖨️ طباعة / حفظ تقرير PDF كامل</button>
+        <button class="btn ghost" id="btn-png2">🖼️ تصدير المخطط كصورة</button>
+        <button class="btn ghost" id="btn-csv">📑 تصدير Excel (CSV)</button>
+        <button class="btn ghost" id="btn-backup">💾 نسخة احتياطية (JSON)</button>
+      </div>
+      <p class="muted" style="margin:10px 2px 0">من نافذة الطباعة اختر «حفظ كـ PDF». التقرير يشمل: الإحصائيات والمخطط، الغائبين حسب القاعة، من غيّروا قاعاتهم، من لا يملكون وثيقة، الحاصلين على ميدالية، المقدّمين بشكل شرطي، والملاحظات.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>⚠️ إدارة البيانات</h2></div>
+      <button class="btn danger" id="btn-reset">🗑️ مسح كل بيانات التفقد (لكل الأجهزة)</button>
+      <p class="muted" style="margin:8px 2px 0">استخدمه فقط بعد التجربة وقبل يوم الامتحان، وبعد تنزيل نسخة احتياطية.</p>
+    </div>
+  </section>
+
+  <!-- الإعدادات -->
+  <section id="v-settings" class="hidden">
+    <div class="panel">
+      <div class="panel-head"><h2>👤 المراقب</h2></div>
+      <div class="field" style="margin-top:0"><label for="s-name">اسم المراقب</label><input id="s-name" placeholder="مثال: أحمد الخطيب"></div>
+      <button class="btn pri sm" id="s-name-save" style="margin-top:8px">حفظ الاسم</button>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>🔐 دخول المسؤول</h2></div>
+      <div id="s-admin"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>ℹ️ حالة الاتصال</h2></div>
+      <div id="s-status" class="muted"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <b>مكتب الأولمبياد العلمي السوري – درعا</b><br>
+  إعداد: المهندس أسامة ياسر الصلخدي
+</footer>
+
+<div id="print"></div>
+<div id="modal" class="modal hidden"></div>
+<span id="sync" class="sync local">…</span>
+
+<script>
+/* النسخة المتصلة بسيرفر Render: تعمل تلقائياً عند فتحها من رابط الموقع.
+   عند فتح الملف مباشرة من الجهاز (file://) تعمل بوضع تجريبي محلي. */
+const CENTER = "جامعة درعا - كلية التربية الثالثة";
+const SUBJECTS = {
+  M:{name:"الرياضيات",color:"#14206B",bg:"#E8EBF7"},
+  P:{name:"الفيزياء",color:"#8A4B00",bg:"#FFF1D6"},
+  C:{name:"الكيمياء",color:"#1F7A45",bg:"#E2F5EA"},
+  B:{name:"علم الأحياء",color:"#2B6E1E",bg:"#ECF7DF"},
+  I:{name:"المعلوماتية",color:"#6A1B9A",bg:"#F2E5FA"},
+  N:{name:"العلوم النووية",color:"#B3261E",bg:"#FDE7E6"}
+};
+const HALL_ORDER = ["القاعة (101)","القاعة (102)","القاعة (103)","القاعة (104)","القاعة (105)","المدرج"];
+const NOTES = {id:"لم يحضر وثيقة إثبات شخصية", other:"أخرى"};
+// طلاب حاصلون على ميدالية في مسار اليافعين (حسب الرقم الامتحاني)
+const MEDAL = new Set(["04254","04278","04224","04225","04106","04121"]);
+const MEDAL_TXT = "🏅 طالب حاصل على ميدالية في مسار اليافعين – يمكن أخذ الحضور له دون إثبات شخصية";
+
+// الصيغة: الاسم|الرقم الامتحاني|رمز الاختصاص
+const RAW = {
+"القاعة (101)":`احمد جمال الكراد|04002|M
+اسراء ناصر شحاده|04005|M
+أمين نضال العمارين|04009|M
+ايمن خالد النصرالله السعدى|04012|M
+بان مدحت الطعانى|04013|M
+بتول وسام الناصر|04014|M
+تقى محمد فلاح|04019|M
+جاد محمد العمارى|04020|M
+جمال وليد عجاج|04021|M
+جنى جمال محمود|04022|M
+حمزه ابراهيم الحريرى|04031|M
+خديجه وليد العيد|04035|M
+رضوه على ابوروميه|04041|M
+رغد احمد الجداى|04042|M
+رقيه عدنان فيصل|04044|M
+رنيم اكرم الشولى|04046|M
+ريم زكريا المسلمانى|04052|M
+ريم ياسر ابراهيم|04053|M
+ريماس محمد موسى|04054|M
+زيد عوض الجباوى|04055|M
+زينة عمار الخطيب|04057|M
+زينه قاسم بلوط|04059|M
+سلام ثابت الخطيب|04064|M
+سلسبيل نعيم ابو خشريف|04066|M
+شام خالد احمد|04068|M
+شام يوسف الموسى|04069|M
+عبد الرحمن محمد أمين زين العابدين|04074|M
+عبد المولى حسين الديات|04077|M
+عصمت رأفت الرباعى|04083|M
+على عزات الغزالى|04085|M
+عمر عبد الله الجباوى|04087|M
+غنى سامى البلخى|04093|M
+فاطمة عماد الزعبى|04095|M
+فرح حسين العمارين|04096|M
+فرح فارس الاحمد|04097|M
+كناز مروان الربابى|04100|M
+لجين شجاع الحمد|04102|M
+لمى حسين الزامل|04105|M
+لميس أيمن القدور|04106|M
+لين علاء الدين المسالمه|04112|M
+ماريا فراس الصباغ الدهنى|04114|M
+ماسه لؤى الحسن|04115|M
+ماسه يوسف الربنى|04117|M
+مؤمن محمد الزرزور|04118|M
+محمد حسين الديات|04120|M
+محمد طارق عماد المصرى|04122|M
+محمد فارس المقداد|04123|M
+محمد محمود الشتيوى|04124|M
+محمد منيب احمد مفلح|04125|M
+نهى مروان العيشات|04135|M
+نور محمد الجباوى|04136|M
+نور محمد العلوه|04137|M
+هبة منير محمد|04138|M
+هشام احمد النابلسى|04141|M
+ياسر نورس النعيمى|04145|M
+يزن محمود العبيد|04147|M
+إبراهيم خالد الجراد|04149|P
+تسنيم سامر السويدان|04159|P
+رغد عماد الفلاح|04163|P
+سندس مزيد التمر|04168|P
+شيماء يوسف الكرسوح|04171|P
+ميرا احمد السويدان|04180|P
+دانه فؤاد العبود|04197|C
+ريحان عبدالرحمن أبو خروب|04201|C
+سلاف نور الدين الحفرى|04202|C
+عائشة محمد خير الحسين|04209|C
+علا على محمد|04212|C
+محمد ماهر العمارين|04216|C
+هبة خالد الرفاعى|04223|C
+احمد فادى الجباوى|04235|B
+ارجوان باسل المريح|04236|B
+اسلام رضوان الغوثانى|04237|B
+افنان نضال خلف|04238|B
+أنس أحمد الرحال|04241|B
+ايمان زكريا المحارب|04242|B
+بتول ضياء القطيفان|04244|B
+بلقيس احمد المحاميد|04245|B
+تسنيم نضال الفالوجى|04246|B
+تقى حاتم خليل|04247|B
+تيماء عارف العيد|04248|B
+جنى يحيى حماده|04249|B
+حلا إياد على|04251|B
+حنين سمير النهار|04252|B
+ربيع محمد الرفاعى|04254|B
+رشا نعيم الطياسنه|04255|B
+رهف على الزعبى|04257|B
+زينه احمد الفلاح|04259|B
+سيلين محمد الرحال|04260|B
+شام حسن الفالوجى|04261|B
+شهد هانى الحفرى|04262|B
+صفا محمد النابلسى|04263|B
+عبدالمنعم على اعقيل|04264|B
+عمر رمزى الفروان|04265|B
+عمر محمدامين الجندى|04266|B
+عمران محمد حسين|04267|B
+غزل شادى ابوالسل|04268|B
+غنى رائد الشقنين|04269|B
+غنى ربيع العمار|04270|B
+غنى عاطف ذيب|04271|B
+فاطمه الزهراء سلطان الحريرى|04272|B
+فرح حسن المحمد|04274|B
+ليلى محمد زهير الخوالده|04276|B
+لين ثائر العواد|04278|B
+ماريا محمود ابو نبوت|04279|B
+مايا ادهم ابو العلايا|04280|B
+محمد حسين الشيخ محمد|04281|B
+منار نظام العيد|04283|B
+ميس ياسر الخطيب|04286|B
+نبيها محمد العيد|04287|B
+نور شام محمود العتمه|04289|B
+نور عاصم السحارى|04290|B
+هاجر ابراهيم الزعبى|04292|B
+احمد حسن زيدية|04226|I
+انس باسل الحاج على|04227|I
+إيلاف عبدو الرفاعى|04228|I
+ريماس فيصل الشريف|04229|I
+ريماس همام المقداد|04230|I
+سجا بلال الحسين|04231|I
+فادى محمد الحورانى|04232|I
+قاسم محمد القطفان|04233|I
+يوسف زكريا المسلمانى|04234|I
+تالا زياد الحمد|04293|N
+تالا زياد السويدانى|04294|N
+حلا محمد الجباوى|04295|N
+حمزه خليل الكومى|04296|N
+رويده عمر عباس|04297|N
+ساره معتز الزعبى|04298|N
+ليمار نضال العوده الله|04299|N`,
+"القاعة (102)":`الهام محمد الهام محمد النعسان|04007|M
+براء على سليمان عائشة|04015|M
+جنى مرعى المسالمه|04025|M
+جنى ناجى اليعقوب|04026|M
+حلا فراس المفلعانى|04030|M
+خنساء عمار الزعبى|04036|M
+ريتاج غسان ابونبوت|04050|M
+ريفان احمد المذيب|04051|M
+سليمان محمد ابو توج|04067|M
+ضياء انور الحلقى|04071|M
+عاصم محمد المحاسنه|04073|M
+علا عبد الرؤوف السعدى|04084|M
+غزل محمد العمارين|04091|M
+غى وائل الصبح|04094|M
+مايا انس المخلوف|04119|M
+هوازن عمر الكفرى|04143|M
+أحمد قاسم الزعبى|04151|P
+براءة محمود الغانم|04158|P
+توليب امجد عياش|04160|P
+لارين محمد المطاوع|04175|P
+محمد اسود الزغير|04178|P
+اسماء طارق الناصر|04187|C
+حنان محمد على الرفاعى|04194|C
+حنين موفق العميان|04195|C
+سوزان حسين غنيم|04203|C
+مرج ياسر الطعانى|04217|C
+معاذ إياد الشرع|04219|C
+ياسمين يامن العمر|04224|C
+يوسف لؤى الواكد|04225|C
+ميس منصور مفعلانى|04285|B`,
+"القاعة (103)":`آية ابراهيم المقداد|04001|M
+أحمد ماجد الشبلاق|04003|M
+الفاروق ابراهيم المقداد|04006|M
+بيسان محمد ابو جهين|04018|M
+جنى سلطان العيد|04023|M
+حلا جلال سليم|04029|M
+حمزه احمد الناصر|04032|M
+حنين شادى فلاح|04033|M
+ديمه ذهب الخليل|04037|M
+زينه رزق ابازيد|04058|M
+صبا داهود بداوه|04070|M
+عبد الله محمد المسالمه|04076|M
+عبدالله محمد ابو الحاج|04078|M
+عبدالملك باسل محمد العمار|04079|M
+عمر باسل الصفدى|04086|M
+عمر محمد المصرى|04088|M
+لجين مهند الفراج|04104|M
+مريم سامر البلخى|04129|M
+نغم رانى العمارين|04134|M
+هنادى نهاد الطعانى|04142|M
+ابراهيم محمود الغانم|04150|P
+راما معاويه السقر|04162|P
+سالى محمد ابو نقطة|04165|P
+غفران احمد الزوبانى|04172|P
+غنى عدنان شيخانى|04173|P
+ميمونه زياد المصرى|04182|P
+آيه بسام المفعلانى|04185|C
+اسيل مشعل الجهمانى|04189|C
+جنى محمود الحوارى|04191|C
+راما عاطف الناصر|04198|C
+شام فايز الشريف|04206|C
+عابد عقله الحنفى|04210|C
+مرح عمران زريقات|04218|C
+جورج ماجد المينا|04250|B
+رغد محمد الزامل|04256|B
+لجين موفق الجلماوى|04275|B
+ميس غازى الرباعى|04284|B
+ندى قاسم اجعارة|04288|B`,
+"القاعة (104)":`بشرى حامد الحاج|04016|M
+بكر محمد غنيم|04017|M
+خديجه باسم عطا|04034|M
+راما قاسم العلوه|04038|M
+رزق محمد الكراد|04040|M
+رفال محمد البكرى|04043|M
+رهف يسار الفاضل المحاميد|04049|M
+سلسبيل ابراهيم خطاب|04065|M
+ضياء محمدرشيد المقداد|04072|M
+عدى صدام حسن|04081|M
+لين أيمن الجهمانى|04110|M
+لين وليد العيفان الحريرى|04113|M
+ماسه محمد السليمان|04116|M
+محمد زكريا الشبلاق|04121|M
+هديل وسيم الخطيب|04140|M
+ونام محمد أسعد|04144|M
+اشرف خالد المستريحى|04153|P
+سيرين منهل حربيدين|04169|P
+شذى عامر الجباوى|04170|P
+لين بسام السويدان|04177|P
+مراد زهير على السعد|04179|P
+نور علاء دلوع|04183|P
+حازم عوض العقلات|04192|C
+خولة ضياء الصالح النابلسى|04196|C
+رهام محمد الرفاعى|04199|C
+شام عبدالله الخشان|04205|C
+صفا سليمان المذيب|04208|C
+غفران ايهم العيد|04214|C
+ميس فيصل السويدان|04221|C
+هاجر زكريا ابوحويه|04222|C
+امل تميم المحاميد|04239|B
+ايناس غسان الجادالله|04243|B`,
+"القاعة (105)":`احمد محمد المصرى|04004|M
+حذيفه محمد الكود|04028|M
+رحمة موسى المطلق|04039|M
+زينب قاسم ابو شاهين|04056|M
+عدنان عبد الرزاق العميان|04080|M
+عزيزة عز الدين العميان|04082|M
+ليلاس خلف المحاميد|04108|M
+ليمار قصى حسين|04109|M
+محمد وسيم الخطيب|04126|M
+مروه نضال القعيد|04128|M
+ملاك احمد العمار|04131|M
+إسلام خالد خليفة|04152|P
+ألمى معتز العيسى|04155|P
+إيمان عدنان بطحه|04156|P
+بانا محمد البرماوى|04157|P
+سندس مأمون شرف|04167|P
+يارا منير الحلقى|04184|P
+اسيل زياد العيد|04188|C
+ريان منهل العقله|04200|C
+شام سليمان العدوى|04204|C`,
+"المدرج":`أمانى احمد المفلح|04008|M
+إيلاف بسام الخطيب|04010|M
+حازم مالك الوادى|04027|M
+رنا محمد السمورى|04045|M
+رهف ماهر عتمه|04048|M
+سالى انس الخطيب|04060|M
+سجا بسام الجلماوى|04062|M
+سجى انس الخليلى|04063|M
+غنا فراس العبسى|04092|M
+لانا محمد الخليلى|04101|M
+ليان محمد ابو السل|04107|M
+لين خالد السعدى|04111|M
+مريم مأمون العيد|04130|M
+منى مرعى الطوالبه|04132|M
+هدى محمد الزعبى|04139|M
+ياسمين على عبد النبى|04146|M
+آيه محمد المذيب|04148|P
+المعتصم بالله مامون خليفه|04154|P
+رواد محمد المبارك|04161|P
+سائده محمد سليم|04164|P
+سناء اسامه خريبه|04166|P
+لمى احمد ابو حامد|04176|P
+ابراهيم خليل المطلق|04186|C
+إيمان مصعب قورماط|04190|C
+حازم نضال المصطفى|04193|C
+شيماء متعب العباس|04207|C
+غرام محمد العيد|04213|C
+ليان احمد عميص|04215|C
+معن عبدالمنعم شباط|04220|C
+ريماس احمد الخطيب|04258|B
+محمد ضياء الفروان|04282|B`
+};
+
+/* ================= أدوات ================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s)
+  .replace(/[ً-ْـ]/g,"")
+  .replace(/[أإآٱ]/g,"ا").replace(/ة/g,"ه").replace(/[ىئ]/g,"ي").replace(/ؤ/g,"و")
+  .replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d))
+  .replace(/\s+/g," ").trim();
+const rid = () => Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
+const short = h => h==="المدرج" ? "المدرج" : h.replace(/\D/g,"");
+const hkey = h => "h"+HALL_ORDER.indexOf(h);
+const tag = s => SUBJECTS[s] ? `<span class="tag" style="color:${SUBJECTS[s].color};background:${SUBJECTS[s].bg}">${SUBJECTS[s].name}</span>` : "";
+const fmtTime = t => new Date(t).toLocaleString("ar-SY",{dateStyle:"short",timeStyle:"short"});
+const hm = t => new Date(t).toLocaleTimeString("ar-SY",{hour:"2-digit",minute:"2-digit"});
+const pct = (x,n) => n ? (x/n*100).toFixed(1)+"%" : "0%";
+function toast(msg){ const d=document.createElement("div"); d.className="toast"; d.textContent=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),2600); }
+const lsGet = k => { try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } };
+const lsSet = (k,v) => { try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
+
+const STUDENTS = [];
+HALL_ORDER.forEach(hall=>{
+  RAW[hall].trim().split("\n").forEach((line,i)=>{
+    const [name,num,s] = line.split("|");
+    STUDENTS.push({id:num.trim(),i:i+1,name:name.trim(),num:num.trim(),s:s.trim(),hall,key:norm(name)});
+  });
+});
+
+/* ================= الحالة ================= */
+const PREF_KEY = "daraa-att-prefs";
+const PREF = Object.assign({name:"",dev:rid()}, lsGet(PREF_KEY)||{});
+lsSet(PREF_KEY,PREF);
+const S = {recs:{},conds:{},finished:{},ready:false};
+let IS_ADMIN = false;
+let SYNC = {pending:0,connected:false,waking:false,error:""};
+
+/* ================= طبقة البيانات ================= */
+let BE;   // backend
+
+function LocalBackend(){
+  const KEY="daraa-att-local-"+EXAM_ID;
+  const d=Object.assign({recs:{},conds:{},finished:{}}, lsGet(KEY)||{});
+  const save=()=>lsSet(KEY,d);
+  return {
+    mode:"local",
+    async start(){ Object.assign(S,d,{ready:true}); onData(); },
+    put(coll,id,data){
+      if(coll==="att") d.recs[id]=data; else if(coll==="conds") d.conds[id]=data;
+      save(); Object.assign(S,d); onData();
+    },
+    finish(h,t){ d.finished[hkey(h)]=t; save(); Object.assign(S,d); onData(); },
+    async resetAll(){ d.recs={};d.conds={};d.finished={}; save(); Object.assign(S,d); onData(); },
+    async adminLogin(){ throw new Error("local"); }, async adminLogout(){}, setCode(){}, getCode(){ return ""; }
+  };
+}
+
+function ServerBackend(){
+  const API="api/";
+  const H=location.host, CK="daraa-att-cache-"+H, OK="daraa-att-outbox-"+H, AK="daraa-att-admin-"+H, CODEK="daraa-att-code-"+H;
+  const fresh=()=>({recs:{},conds:{},finished:{},since:0,epoch:null});
+  let cache=Object.assign(fresh(), lsGet(CK)||{});
+  let outbox=lsGet(OK)||[];
+  // رمز المراقبين يمكن تمريره في الرابط ?k=الرمز
+  const u=new URL(location.href), kq=u.searchParams.get("k");
+  if(kq){ lsSet(CODEK,kq); u.searchParams.delete("k"); history.replaceState(null,"",u.pathname+u.search+u.hash); }
+  let code=lsGet(CODEK)||"", admin=lsGet(AK)||"";
+  IS_ADMIN=!!admin;
+  const hdr=()=>({"Content-Type":"application/json","X-Code":code,"X-Admin":admin});
+  const saveCache=()=>lsSet(CK,cache), saveOut=()=>lsSet(OK,outbox);
+  const apply=()=>{ S.recs=cache.recs; S.conds=cache.conds; S.finished=cache.finished; SYNC.pending=outbox.length; };
+  apply(); S.ready=true;
+  let busy=false, timer=null, everOK=false, asking=false;
+  const t0=Date.now();
+
+  async function req(path,opt={}){
+    const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),opt.timeout||20000);
+    try{ return await fetch(API+path,{method:opt.method||"GET",body:opt.body,headers:hdr(),signal:ctl.signal,cache:"no-store"}); }
+    finally{ clearTimeout(to); }
+  }
+  function schedule(ms){
+    clearTimeout(timer);
+    const base = document.hidden ? 10000 : IS_ADMIN ? 2000 : 3000;
+    timer=setTimeout(cycle, ms ?? (SYNC.connected ? base : 4000));
+  }
+  function askCode(){
+    if(asking || !$("modal").classList.contains("hidden")) return;
+    asking=true;
+    const m=$("modal");
+    m.innerHTML=`<div class="box"><h3>🔑 رمز الدخول</h3><p class="muted" style="margin:0">اكتب رمز المراقبين الذي أعطاك إياه المسؤول.</p>
+      <div class="field"><input id="code-in" dir="ltr" autocomplete="off"></div>
+      <div class="row"><button class="btn pri" id="code-ok">دخول</button></div></div>`;
+    m.classList.remove("hidden"); $("code-in").focus();
+    const ok=()=>{ code=$("code-in").value.trim(); lsSet(CODEK,code); m.classList.add("hidden"); asking=false; SYNC.error=""; cycle(); askName(); };
+    $("code-ok").onclick=ok; $("code-in").addEventListener("keydown",e=>{ if(e.key==="Enter") ok(); });
+  }
+  async function cycle(){
+    if(busy){ schedule(); return; } busy=true;
+    try{
+      if(outbox.length){
+        const batch=outbox.slice(0,300);
+        const r=await req("push",{method:"POST",body:JSON.stringify({ops:batch})});
+        if(r.status===401) throw {code:401};
+        if(!r.ok) throw new Error("push "+r.status);
+        outbox=outbox.filter(o=>!batch.includes(o)); saveOut();
+      }
+      const r=await req("state?since="+Math.max(0,cache.since-3000));
+      if(r.status===401) throw {code:401};
+      if(!r.ok) throw new Error("state "+r.status);
+      const j=await r.json();
+      if(cache.epoch!==null && j.epoch!==cache.epoch){
+        // المسؤول مسح البيانات: نبدأ من جديد ونتجاهل التعديلات الأقدم من المسح
+        const ep=j.epoch; cache=fresh(); cache.epoch=ep;
+        outbox=outbox.filter(o=>(o.d.t||0)>ep); saveOut(); saveCache(); busy=false; return cycle();
+      }
+      cache.epoch=j.epoch;
+      const pend=new Set(outbox.map(o=>o.k+"|"+o.id));
+      j.items.forEach(it=>{
+        if(pend.has(it.k+"|"+it.id)) return;
+        if(it.k==="att") cache.recs[it.id]=it.d;
+        else if(it.k==="cond") cache.conds[it.id]=it.d;
+        else if(it.k==="fin") cache.finished[it.id]=it.d.t;
+      });
+      cache.since=j.now; saveCache();
+      SYNC.connected=true; everOK=true; SYNC.error="";
+    }catch(e){
+      SYNC.connected=false;
+      if(e && e.code===401){ SYNC.error="code"; askCode(); } else SYNC.error="";
+    }finally{
+      busy=false; SYNC.waking = !everOK && Date.now()-t0>6000; apply(); onData(); schedule();
+    }
+  }
+  function enqueue(k,id,d){
+    outbox=outbox.filter(o=>!(o.k===k && o.id===id)); outbox.push({k,id,d}); saveOut();
+    if(k==="att") cache.recs[id]=d; else if(k==="cond") cache.conds[id]=d; else if(k==="fin") cache.finished[id]=d.t;
+    saveCache(); apply(); schedule(150);
+  }
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) schedule(50); });
+  addEventListener("online",()=>schedule(50));
+
+  return {
+    mode:"server",
+    async start(){
+      cycle();
+      if(admin) req("me").then(r=>r.json()).then(j=>{ if(!j.admin){ admin=""; lsSet(AK,""); IS_ADMIN=false; updateRoleUI(); } }).catch(()=>{});
+    },
+    put(coll,id,data){ enqueue(coll==="att"?"att":"cond",id,data); },
+    finish(h,t){ enqueue("fin",hkey(h),{t}); },
+    async resetAll(){
+      const r=await req("reset",{method:"POST",body:"{}"});
+      if(!r.ok) throw new Error(r.status===403?"يجب الدخول كمسؤول":"خطأ "+r.status);
+      outbox=[]; saveOut(); cache=fresh(); saveCache(); apply(); onData(); cycle();
+    },
+    async adminLogin(pw){
+      const r=await req("login",{method:"POST",body:JSON.stringify({password:pw})});
+      if(!r.ok) throw new Error(r.status===403?"كلمة المرور غير صحيحة":"تعذّر الاتصال بالسيرفر");
+      admin=(await r.json()).token; lsSet(AK,admin); IS_ADMIN=true; updateRoleUI(); schedule(50);
+    },
+    async adminLogout(){ admin=""; lsSet(AK,""); IS_ADMIN=false; updateRoleUI(); },
+    setCode(c){ code=c; lsSet(CODEK,c); SYNC.error=""; schedule(50); },
+    getCode(){ return code; }
+  };
+}
+
+/* ================= الطلاب ================= */
+function condStudents(){
+  return Object.values(S.conds).filter(c=>!c.del).map(c=>({id:c.id,i:"ش",name:c.name,num:c.num||"",s:c.s||"",hall:c.hall,key:norm(c.name),cond:true}));
+}
+const all = () => STUDENTS.concat(condStudents());
+const R = id => S.recs[id] || {};
+const matches = (s,q) => !q || (/^\d+$/.test(q) ? (s.num && (s.num.includes(q) || s.num.replace(/^0+/,"").startsWith(q.replace(/^0+/,"")))) : q.split(" ").every(t=>s.key.includes(t)));
+
+function setRec(id,patch){
+  const old=R(id);
+  const rec=Object.assign({st:"",hall:"",note:"",txt:""}, old, patch, {t:Date.now(), by:PREF.name||"مراقب", dev:PREF.dev, auto:!!patch.auto});
+  if(old.t && old.st && patch.st!==undefined && patch.st!==old.st) rec.prev=old.st;   // تعديل حالة سابقة
+  S.recs[id]=rec;            // تحديث فوري للواجهة
+  BE.put("att",id,rec);
+}
+
+/* ================= التنقل ================= */
+let view="home", curHall=null, filter="all", openNote=null;
+const ADMIN_VIEWS=["admin","stats","reports"];
+function go(v){
+  if(ADMIN_VIEWS.includes(v) && !IS_ADMIN) v="home";
+  view=v;
+  ["home","hall","admin","stats","reports","settings"].forEach(x=>$("v-"+x).classList.toggle("hidden",x!==v));
+  document.querySelectorAll("nav.tabs [data-tab]").forEach(b=>b.classList.toggle("on", b.dataset.tab===(v==="hall"?"home":v)));
+  render(true);
+  window.scrollTo({top:0});
+}
+document.addEventListener("click",e=>{ const t=e.target.closest("[data-tab]"); if(t) go(t.dataset.tab); });
+
+function updateRoleUI(){
+  document.querySelectorAll(".adm").forEach(b=>b.classList.toggle("hidden",!IS_ADMIN));
+  $("who").innerHTML = IS_ADMIN ? `<b>👑 المسؤول</b>` : PREF.name ? `المراقب<br><b>${esc(PREF.name)}</b>` : "";
+  if(!IS_ADMIN && ADMIN_VIEWS.includes(view)) go("home");
+  if(view==="settings") renderSettings();
+}
+
+/* ---------- إعادة الرسم ---------- */
+let renderPending=false;
+function onData(){ renderSync(); render(); }
+function render(force){
+  // لا نعيد رسم القائمة أثناء الكتابة في حقل ملاحظة حتى لا يضيع المؤشر
+  const ae=document.activeElement;
+  if(!force && ae && (ae.matches("[data-txt]") || $("modal").contains(ae))){ renderPending=true; return; }
+  renderPending=false;
+  if(view==="home") renderHome();
+  else if(view==="hall") renderHall();
+  else if(view==="admin") renderAdmin();
+  else if(view==="stats") renderStats();
+  else if(view==="settings") renderSettings();
+}
+document.addEventListener("focusout",()=>setTimeout(()=>{ if(renderPending) render(); },50));
+
+function renderSync(){
+  const el=$("sync");
+  if(BE && BE.mode==="local"){ el.className="sync local"; el.textContent="💾 وضع محلي"; return; }
+  const n=SYNC.pending;
+  if(SYNC.error==="code"){ el.className="sync off"; el.textContent="🔑 رمز الدخول مطلوب"; }
+  else if(!SYNC.connected){ el.className="sync off"; el.textContent=`📴 غير متصل${n?` – ${n} محفوظ على الجهاز`:""}`; }
+  else if(n){ el.className="sync wait"; el.textContent=`⏳ إرسال ${n}…`; }
+  else { el.className="sync ok"; el.textContent="🟢 متزامن"; }
+  $("banner").innerHTML = (SYNC.waking && !SYNC.connected)
+    ? `<div class="warn">⏳ السيرفر يستيقظ (قد يستغرق حتى دقيقة في أول دخول). يمكنك البدء بالتفقد الآن، وكل شيء يُحفظ على الجهاز ويُرسل تلقائياً عند الاتصال.</div>` : "";
+}
+addEventListener("online",onData); addEventListener("offline",onData);
+
+/* ================= الرئيسية ================= */
+function hallCounts(h){
+  const own=all().filter(s=>s.hall===h);
+  let p=0,a=0; own.forEach(s=>{const st=R(s.id).st; if(st==="p")p++; else if(st==="a")a++;});
+  return {n:own.length,p,a,un:own.length-p-a};
+}
+function renderHome(){
+  if(!S.ready) return;
+  $("hall-tiles").innerHTML = HALL_ORDER.map(h=>{
+    const c=hallCounts(h);
+    return `<button class="hall-tile" data-hall="${h}">
+      <div class="no">${short(h)}</div><div class="lbl">${h==="المدرج"?"":"القاعة"}</div>
+      <div class="pbar"><i style="width:${c.n?c.p/c.n*100:0}%;background:var(--green)"></i><i style="width:${c.n?c.a/c.n*100:0}%;background:var(--red)"></i></div>
+      <div class="cnt">تم تفقد ${c.p+c.a} من ${c.n}</div>
+      ${S.finished[hkey(h)]?`<span class="done">✔ انتهى التفقد</span>`:""}
+    </button>`;
+  }).join("");
+}
+function openHall(h){
+  curHall=h; filter="all"; openNote=null; $("hq").value="";
+  document.querySelectorAll("[data-f]").forEach(c=>c.classList.toggle("on",c.dataset.f==="all"));
+  go("hall");
+}
+$("hall-tiles").addEventListener("click",e=>{ const b=e.target.closest("[data-hall]"); if(b) openHall(b.dataset.hall); });
+
+/* ================= القاعة ================= */
+function card(s,H){
+  const r=R(s.id), foreign = s.hall!==H;
+  const elsewhere = !foreign && r.st==="p" && r.hall && r.hall!==H;
+  let cls = r.st==="p" ? "ok" : r.st==="a" ? "no" : "";
+  if(foreign || elsewhere) cls="blue";
+  let alert="";
+  if(foreign){
+    alert = `⚠️ تنبيه: هذا الطالب قاعته الأصلية هي ${s.hall}`;
+    if(r.st==="p" && r.hall===H) alert += ` — سُجّل حاضراً هنا (غيّر قاعته)`;
+    else if(r.st==="p") alert += ` — سُجّل حاضراً في ${r.hall}`;
+    else if(r.st==="a") alert += ` — مسجّل غائباً`;
+  } else if(elsewhere){
+    alert = `ℹ️ هذا الطالب حضر في ${r.hall} (غيّر قاعته)`;
+  }
+  const noteTxt = r.note==="id" ? NOTES.id : r.note==="other" ? (r.txt||"ملاحظة") : "";
+  const acts = foreign
+    ? `<button class="a-h ${r.st==="p"&&r.hall===H?"on":""}" data-act="p" data-id="${s.id}">✔ حاضر هنا</button>`
+    : `<button class="a-p ${r.st==="p"?"on":""}" data-act="p" data-id="${s.id}">حاضر</button>
+       <button class="a-a ${r.st==="a"?"on":""}" data-act="a" data-id="${s.id}">غائب</button>`;
+  const stName = {p:"حاضر",a:"غائب","":"بلا حالة"};
+  const edited = r.t ? `<div class="edited">🕒 ${hm(r.t)} – ${esc(r.by||"")}${r.prev!==undefined&&r.prev!==r.st?` · عُدِّل من «${stName[r.prev]||""}»`:""}${r.auto?" · غياب تلقائي عند إنهاء التفقد":""}</div>` : "";
+  return `<div class="st ${cls}" id="st-${s.id}">
+    <div class="st-row">
+      <div class="idx">${s.cond?"ش":s.i}</div>
+      <div class="info">
+        <div class="nm">${esc(s.name)}</div>
+        <div class="meta">${s.num?`<span>🔢 ${esc(s.num)}</span>`:""}${tag(s.s)}${s.cond?`<span class="tag" style="background:#FFF3D9;color:#B26A00">تقديم شرطي</span>`:""}${foreign?`<span class="tag" style="background:#E4EFFD;color:#1E6FD9">${s.hall}</span>`:""}</div>
+      </div>
+      <div class="acts">
+        ${acts}
+        <button class="a-n ${noteTxt||openNote===s.id?"on":""}" data-act="n" data-id="${s.id}">ملاحظات</button>
+        ${s.cond?`<button class="a-del" data-act="del" data-id="${s.id}" title="حذف">🗑️</button>`:""}
+      </div>
+    </div>
+    ${MEDAL.has(s.num)?`<div class="medal">${MEDAL_TXT}</div>`:""}
+    ${alert?`<div class="alert">${alert}</div>`:""}
+    ${noteTxt && openNote!==s.id?`<div class="notebadge">📝 ${esc(noteTxt)}</div>`:""}
+    ${openNote===s.id?`<div class="notebox">
+      <select data-note="${s.id}">
+        <option value="">— بدون ملاحظة —</option>
+        <option value="id" ${r.note==="id"?"selected":""}>${NOTES.id}</option>
+        <option value="other" ${r.note==="other"?"selected":""}>أخرى (كتابة يدوية)</option>
+      </select>
+      ${r.note==="other"?`<input data-txt="${s.id}" placeholder="اكتب الملاحظة هنا…" value="${esc(r.txt||"")}">`:""}
+    </div>`:""}
+    ${edited}
+  </div>`;
+}
+
+function renderHall(){
+  const H=curHall; if(!H) return;
+  $("h-title").textContent = H;
+  const raw=$("hq").value, q=norm(raw);
+  $("hq-clear").classList.toggle("hidden",!raw);
+  const list=all();
+  const own=list.filter(s=>s.hall===H);
+  const c=hallCounts(H);
+  const guests=list.filter(s=>s.hall!==H && R(s.id).st==="p" && R(s.id).hall===H);
+  $("h-prog").innerHTML = `<span class="pill g">حاضر ${c.p}</span><span class="pill r">غائب ${c.a}</span><span class="pill n">متبقٍ ${c.un}</span>${guests.length?`<span class="pill b">قادمون ${guests.length}</span>`:""}`;
+
+  const f = s => { const st=R(s.id).st||""; return filter==="all" || (filter==="un"?!st:st===filter); };
+  const ownF = own.filter(s=>matches(s,q) && f(s));
+  const guestsF = guests.filter(s=>matches(s,q));
+  const others = q ? list.filter(s=>s.hall!==H && matches(s,q) && !guests.includes(s)) : [];
+
+  let html="";
+  if(others.length){
+    html += `<div class="sec-title blue">🔵 نتائج من قاعات أخرى (${others.length})</div><div class="list">${others.slice(0,30).map(s=>card(s,H)).join("")}</div>`;
+  }
+  if(q && guestsF.length){
+    html += `<div class="sec-title blue">🔵 من قاعات أخرى وحاضرون هنا (${guestsF.length})</div><div class="list">${guestsF.map(s=>card(s,H)).join("")}</div>`;
+  }
+  html += `<div class="sec-title">طلاب ${H} (${ownF.length}${ownF.length!==own.length?" من "+own.length:""})</div>`;
+  html += ownF.length ? `<div class="list">${ownF.map(s=>card(s,H)).join("")}</div>`
+        : `<div class="empty">${q?"لا يوجد طالب بهذا الاسم في هذه القاعة":"لا يوجد طلاب ضمن هذا التصنيف"}${q?`<br><br><button class="btn gold sm" data-addq="1">＋ إضافة «${esc(raw)}» كتقديم شرطي</button>`:""}</div>`;
+  if(!q && guestsF.length){
+    html += `<div class="sec-title blue">🔵 طلاب من قاعات أخرى حاضرون في هذه القاعة (${guestsF.length})</div><div class="list">${guestsF.map(s=>card(s,H)).join("")}</div>`;
+  }
+  $("h-list").innerHTML = html;
+}
+
+$("hq").addEventListener("input",()=>{openNote=null;renderHall();});
+$("hq-clear").addEventListener("click",()=>{$("hq").value="";renderHall();$("hq").focus();});
+document.querySelectorAll("[data-f]").forEach(c=>c.addEventListener("click",()=>{
+  filter=c.dataset.f; document.querySelectorAll("[data-f]").forEach(x=>x.classList.toggle("on",x===c)); renderHall();
+}));
+
+$("h-list").addEventListener("click",e=>{
+  if(e.target.closest("[data-addq]")){ openAdd($("hq").value.trim()); return; }
+  const b=e.target.closest("[data-act]"); if(!b) return;
+  const id=b.dataset.id, act=b.dataset.act, r=R(id), H=curHall;
+  if(act==="p"){
+    if(r.st==="p" && r.hall===H){ if(!confirm("إلغاء تسجيل الحضور لهذا الطالب؟")) return; setRec(id,{st:"",hall:""}); }
+    else setRec(id,{st:"p",hall:H});
+  } else if(act==="a"){
+    if(r.st==="a"){ setRec(id,{st:"",hall:""}); }
+    else {
+      if(r.st==="p" && r.hall && r.hall!==H && !confirm(`هذا الطالب مسجّل حاضراً في ${r.hall}. هل تريد تسجيله غائباً؟`)) return;
+      setRec(id,{st:"a",hall:H});
+    }
+  } else if(act==="n"){
+    openNote = openNote===id ? null : id;
+  } else if(act==="del"){
+    const c=S.conds[id];
+    if(c && confirm(`حذف الطالب «${c.name}» من قائمة التقديم الشرطي؟`)){
+      const nc=Object.assign({},c,{del:true,t:Date.now()}); S.conds[id]=nc; BE.put("conds",id,nc);
+      setRec(id,{st:"",hall:""});
+    }
+  }
+  renderHall();
+});
+$("h-list").addEventListener("change",e=>{
+  const sel=e.target.closest("[data-note]");
+  if(sel){
+    const id=sel.dataset.note;
+    setRec(id,{note:sel.value, auto:R(id).auto});
+    renderHall();
+    const inp=document.querySelector(`[data-txt="${id}"]`); if(inp) inp.focus();
+  }
+});
+const txtTimers={};
+$("h-list").addEventListener("input",e=>{
+  const inp=e.target.closest("[data-txt]"); if(!inp) return;
+  const id=inp.dataset.txt, v=inp.value;
+  clearTimeout(txtTimers[id]);
+  txtTimers[id]=setTimeout(()=>setRec(id,{txt:v, auto:R(id).auto}),600);
+});
+
+/* ---------- إنهاء التفقد ---------- */
+$("btn-finish").addEventListener("click",()=>{
+  const H=curHall;
+  const un=all().filter(s=>s.hall===H && !R(s.id).st);
+  if(!confirm(un.length ? `إنهاء تفقد ${H}؟\nسيتم احتساب ${un.length} طالباً لم يُسجَّل لهم حضور على أنهم غائبون.\n(يمكن تعديل حالة أي طالب لاحقاً إذا حضر متأخراً)` : `إنهاء تفقد ${H}؟ تم تفقد جميع الطلاب.`)) return;
+  un.forEach(s=>setRec(s.id,{st:"a",hall:H,auto:true}));
+  const t=Date.now(); S.finished[hkey(H)]=t; BE.finish(H,t);
+  toast(`تم إنهاء تفقد ${H} ✔`);
+  renderHall();
+});
+
+/* ---------- إضافة طالب (تقديم شرطي) ---------- */
+$("btn-add").addEventListener("click",()=>openAdd(""));
+function openAdd(prefill){
+  const m=$("modal"), isNum=/^\d+$/.test(prefill);
+  m.innerHTML = `<div class="box">
+    <h3>إضافة طالب – تقديم شرطي</h3>
+    <p class="muted" style="margin:0">طالب غير موجود في القوائم، يُضاف يدوياً ويُسجَّل حاضراً.</p>
+    <div class="field"><label>الاسم الثلاثي *</label><input id="c-name" value="${esc(isNum?"":prefill)}" autocomplete="off"></div>
+    <div class="field"><label>الرقم الامتحاني (إن وُجد)</label><input id="c-num" inputmode="numeric" value="${isNum?esc(prefill):""}"></div>
+    <div class="field"><label>الاختصاص</label><select id="c-s"><option value="">— غير محدد —</option>${Object.entries(SUBJECTS).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join("")}</select></div>
+    <div class="field"><label>رقم القاعة</label><select id="c-hall">${HALL_ORDER.map(h=>`<option ${h===curHall?"selected":""}>${h}</option>`).join("")}</select></div>
+    <div class="field"><label>ملاحظة</label><select id="c-note"><option value="">— بدون —</option><option value="id">${NOTES.id}</option></select></div>
+    <div class="row"><button class="btn pri" id="c-save">حفظ</button><button class="btn ghost" id="c-cancel">إلغاء</button></div>
+  </div>`;
+  m.classList.remove("hidden");
+  $("c-name").focus();
+  $("c-cancel").onclick=()=>{ m.classList.add("hidden"); render(true); };
+  $("c-save").onclick=()=>{
+    const name=$("c-name").value.replace(/\s+/g," ").trim();
+    if(!name){ $("c-name").focus(); return; }
+    const dup = STUDENTS.find(s=>s.key===norm(name));
+    if(dup && !confirm(`يوجد طالب بنفس الاسم في القوائم (${dup.hall} – رقم ${dup.num}).\nهل تريد إضافته كتقديم شرطي على أي حال؟`)) return;
+    const id="c_"+rid(), hall=$("c-hall").value;
+    const c={id,name,num:$("c-num").value.trim(),s:$("c-s").value,hall,t:Date.now(),by:PREF.name||"مراقب",del:false};
+    S.conds[id]=c; BE.put("conds",id,c);
+    setRec(id,{st:"p",hall,note:$("c-note").value});
+    m.classList.add("hidden"); $("hq").value="";
+    toast("تمت إضافة الطالب ✔"); render(true);
+  };
+}
+$("modal").addEventListener("click",e=>{ if(e.target.id==="modal"){ $("modal").classList.add("hidden"); render(true);} });
+
+/* ================= الحسابات ================= */
+function compute(){
+  const list=all(), per={};
+  HALL_ORDER.forEach(h=>per[h]={total:0,p:0,a:0,un:0,ma:0,moved:0,seated:0,cond:0,checked:0});
+  const L={absent:[],moved:[],noid:[],cond:[],other:[],medal:[]};
+  list.forEach(s=>{
+    const r=R(s.id), P=per[s.hall];
+    P.total++; if(s.cond){P.cond++; L.cond.push(s);}
+    if(MEDAL.has(s.num)) L.medal.push(s);
+    if(r.st) P.checked++;
+    if(r.st==="p"){
+      P.p++; (per[r.hall]||P).seated++;
+      if(r.hall && r.hall!==s.hall){P.moved++; L.moved.push(s);}
+    } else { P.a++; if(!r.st) P.un++; else P.ma++; L.absent.push(s); }
+    if(r.note==="id") L.noid.push(s);
+    if(r.note==="other") L.other.push(s);
+  });
+  const T={total:0,p:0,a:0,un:0,ma:0,moved:0,seated:0,cond:0,checked:0};
+  Object.values(per).forEach(P=>Object.keys(T).forEach(k=>T[k]+=P[k]));
+  return {per,T,L};
+}
+
+/* ================= لوحة المسؤول ================= */
+function renderAdmin(){
+  const {per,T,L}=compute();
+  $("a-kpis").innerHTML = `
+    <div class="kpi"><b>${T.total}</b><span>العدد الكلي</span></div>
+    <div class="kpi y"><b>${pct(T.checked,T.total)}</b><span>نسبة إنجاز التفقد (${T.checked}/${T.total})</span></div>
+    <div class="kpi g"><b>${T.p}</b><span>حاضر – ${pct(T.p,T.total)}</span></div>
+    <div class="kpi r"><b>${T.ma}</b><span>غائب – ${pct(T.ma,T.total)}</span></div>
+    <div class="kpi"><b>${T.un}</b><span>لم يُتفقد بعد</span></div>
+    <div class="kpi b"><b>${T.moved}</b><span>غيّروا قاعاتهم</span></div>
+    <div class="kpi"><b>${L.noid.length}</b><span>بدون وثيقة</span></div>
+    <div class="kpi"><b>${T.cond}</b><span>تقديم شرطي</span></div>`;
+  // آخر نشاط لكل قاعة
+  const last={};
+  Object.values(S.recs).forEach(r=>{ if(r.hall && (!last[r.hall]||r.t>last[r.hall].t)) last[r.hall]=r; });
+  $("a-halls").innerHTML = HALL_ORDER.map(h=>{
+    const P=per[h], l=last[h], fin=S.finished[hkey(h)];
+    return `<div class="hcard" data-open="${h}">
+      <div class="top"><b>${h}</b>${fin?`<span class="done">✔ انتهى ${hm(fin)}</span>`:`<span class="muted">${pct(P.checked,P.total)}</span>`}</div>
+      <div class="pbar"><i style="width:${P.total?P.p/P.total*100:0}%;background:var(--green)"></i><i style="width:${P.total?P.ma/P.total*100:0}%;background:var(--red)"></i></div>
+      <div class="big">${P.checked}<span class="muted" style="font-size:.9rem"> / ${P.total} تم تفقدهم</span></div>
+      <div class="nums"><span style="color:var(--green)">حاضر ${P.p} (${pct(P.p,P.total)})</span><span style="color:var(--red)">غائب ${P.ma} (${pct(P.ma,P.total)})</span><span class="muted">متبقٍ ${P.un}</span></div>
+      ${P.moved||P.seated!==P.p?`<div class="nums" style="margin-top:2px"><span style="color:var(--blue)">غادروا ${P.moved} · جالسون فعلياً ${P.seated}</span></div>`:""}
+      <div class="last">${l?`آخر نشاط ${hm(l.t)} – ${esc(l.by||"")}`:"لم يبدأ التفقد"}</div>
+    </div>`;
+  }).join("");
+  // آخر العمليات
+  const byId={}; all().forEach(s=>byId[s.id]=s);
+  const items=Object.entries(S.recs).filter(([id,r])=>byId[id]&&r.t&&!r.auto);
+  HALL_ORDER.forEach((h,i)=>{ const t=S.finished["h"+i]; if(t) items.push(["__fin"+i,{t,fin:h}]); });
+  items.sort((a,b)=>b[1].t-a[1].t); items.length=Math.min(items.length,30);
+  $("a-feed-n").textContent = `${Object.keys(S.recs).length} سجلاً`;
+  $("a-feed").innerHTML = items.length ? items.map(([id,r])=>{
+    if(r.fin) return `<div><span class="dot" style="background:var(--gold)"></span><span style="flex:1"><b>✔ انتهى تفقد ${r.fin}</b> (غير المتفقدين حُسبوا غياباً)</span><span class="tm">${hm(r.t)}</span></div>`;
+    const s=byId[id], col=r.st==="p"?"var(--green)":r.st==="a"?"var(--red)":"var(--muted)";
+    const what=r.st==="p"?"حاضر":r.st==="a"?(r.auto?"غائب (تلقائي)":"غائب"):"أُلغيت الحالة";
+    return `<div><span class="dot" style="background:${col}"></span><span style="flex:1"><b>${esc(s.name)}</b> ← ${what}${r.hall&&r.hall!==s.hall&&r.st==="p"?` في ${r.hall} 🔵`:""}${r.prev!==undefined&&r.prev!==r.st&&r.prev?" (تعديل)":""}</span><span class="tm">${hm(r.t)} · ${esc(r.by||"")}</span></div>`;
+  }).join("") : `<div class="muted">لا توجد عمليات بعد.</div>`;
+}
+$("a-halls").addEventListener("click",e=>{ const c=e.target.closest("[data-open]"); if(c) openHall(c.dataset.open); });
+
+/* ================= الإحصائيات ================= */
+function renderStats(){
+  const {per,T,L}=compute();
+  $("stats-note").innerHTML = T.un ? `<b>${T.un}</b> طالباً لم يُسجَّل لهم حضور ويُحسبون هنا غياباً.` : `تم تفقد جميع الطلاب ✔`;
+  $("kpis").innerHTML = `
+    <div class="kpi"><b>${T.total}</b><span>العدد الكلي</span></div>
+    <div class="kpi g"><b>${T.p}</b><span>الحضور (${pct(T.p,T.total)})</span></div>
+    <div class="kpi r"><b>${T.a}</b><span>الغياب (${pct(T.a,T.total)})</span></div>
+    <div class="kpi y"><b>${pct(T.p,T.total)}</b><span>نسبة الحضور</span></div>
+    <div class="kpi b"><b>${T.moved}</b><span>غيّروا قاعاتهم</span></div>
+    <div class="kpi"><b>${L.noid.length}</b><span>بدون وثيقة إثبات شخصية</span></div>
+    <div class="kpi"><b>${T.cond}</b><span>تقديم شرطي</span></div>
+    <div class="kpi r"><b>${pct(T.a,T.total)}</b><span>نسبة الغياب</span></div>`;
+  $("hall-table").innerHTML = hallTable(per,T);
+  drawChart($("chart"),per,T,L);
+}
+function hallTable(per,T){
+  const row=(name,P)=>`<tr><td><b>${name}</b></td><td>${P.total}</td><td class="g">${P.p}</td><td class="r">${P.a}</td><td>${pct(P.p,P.total)}</td><td>${pct(P.a,P.total)}</td><td class="b">${P.moved}</td><td>${P.seated}</td><td>${P.cond}</td></tr>`;
+  return `<div class="tbl-wrap"><table><thead><tr><th>القاعة</th><th>الكلي</th><th>الحضور</th><th>الغياب</th><th>نسبة الحضور</th><th>نسبة الغياب</th><th>غيّروا قاعتهم</th><th>حاضرون فعلياً</th><th>شرطي</th></tr></thead>
+  <tbody>${HALL_ORDER.map(h=>row(h,per[h])).join("")}</tbody><tfoot>${row("المجموع الكلي",T)}</tfoot></table></div>`;
+}
+
+function drawChart(cv,per,T,L){
+  const W=cv.width,H=cv.height,c=cv.getContext("2d");
+  const F="'Cairo',system-ui,sans-serif";
+  const C={navy:"#14206B",green:"#2E9E5B",red:"#C8343B",blue:"#1E6FD9",gold:"#F2B705",muted:"#5F6787",line:"#DDE2F0",soft:"#E8EBF7"};
+  c.setTransform(1,0,0,1,0,0); c.direction="rtl";
+  c.fillStyle="#fff"; c.fillRect(0,0,W,H);
+  c.fillStyle=C.navy; c.fillRect(0,0,W,96);
+  c.fillStyle=C.gold; c.fillRect(0,96,W,5);
+  c.fillStyle="#fff"; c.textAlign="center"; c.textBaseline="middle";
+  c.font=`800 32px ${F}`; c.fillText("إحصائيات التفقد – المرحلة الأولى 2027",W/2,38);
+  c.font=`600 19px ${F}`; c.fillText("مكتب الأولمبياد العلمي السوري – درعا  |  "+CENTER+"  |  "+fmtTime(Date.now()),W/2,74);
+  const k=[["العدد الكلي",T.total,C.navy],["الحضور",T.p,C.green],["الغياب",T.a,C.red],["نسبة الحضور",pct(T.p,T.total),C.green],["نسبة الغياب",pct(T.a,T.total),C.red]];
+  const kw=(W-60-4*14)/5;
+  k.forEach(([lbl,val,col],i)=>{
+    const x=W-30-(i+1)*kw-i*14, y=122;
+    c.fillStyle="#F6F7FC"; roundRect(c,x,y,kw,96,14); c.fill();
+    c.fillStyle=col; roundRect(c,x,y,kw,6,3); c.fill();
+    c.fillStyle=col; c.font=`800 38px ${F}`; c.fillText(String(val),x+kw/2,y+46);
+    c.fillStyle=C.muted; c.font=`600 18px ${F}`; c.fillText(lbl,x+kw/2,y+80);
+  });
+  const bx0=40, bx1=780, by0=290, by1=700;
+  c.textAlign="right"; c.fillStyle=C.navy; c.font=`800 22px ${F}`; c.fillText("الحضور والغياب حسب القاعة",bx1,262);
+  const max=Math.max(1,...HALL_ORDER.map(h=>Math.max(per[h].p,per[h].a)));
+  const step=niceStep(max), top=Math.ceil(max/step)*step;
+  c.font=`600 15px ${F}`; c.textAlign="left";
+  for(let v=0; v<=top; v+=step){
+    const y=by1-(v/top)*(by1-by0);
+    c.strokeStyle=C.line; c.lineWidth=1; c.beginPath(); c.moveTo(bx0+30,y); c.lineTo(bx1,y); c.stroke();
+    c.fillStyle=C.muted; c.fillText(String(v),bx0-6,y);
+  }
+  const gw=(bx1-bx0-30)/HALL_ORDER.length, bw=Math.min(40,gw*0.32);
+  HALL_ORDER.forEach((h,i)=>{
+    const P=per[h], cx=bx1-gw*(i+.5);
+    [[P.p,C.green,-1],[P.a,C.red,1]].forEach(([v,col,side])=>{
+      const bh=(v/top)*(by1-by0), x=cx+side*(bw/2+3)-bw/2;
+      c.fillStyle=col; roundRect(c,x,by1-bh,bw,Math.max(bh,0.01),6,true); c.fill();
+      c.fillStyle=col; c.textAlign="center"; c.font=`800 17px ${F}`; c.fillText(String(v),x+bw/2,by1-bh-14);
+    });
+    c.fillStyle=C.navy; c.font=`800 20px ${F}`; c.textAlign="center"; c.fillText(short(h),cx,by1+24);
+    c.fillStyle=C.muted; c.font=`600 14px ${F}`; c.fillText(`${P.total} طالب – ${pct(P.p,P.total)}`,cx,by1+48);
+  });
+  const dx=990, dy=470, R1=150, R2=92;
+  c.textAlign="center"; c.fillStyle=C.navy; c.font=`800 22px ${F}`; c.fillText("النسبة الكلية",dx,262);
+  const tot=Math.max(T.total,1); let a0=-Math.PI/2;
+  [[T.p,C.green],[T.a,C.red]].forEach(([v,col])=>{
+    const a1=a0+v/tot*Math.PI*2; c.beginPath(); c.moveTo(dx,dy); c.arc(dx,dy,R1,a0,a1); c.closePath(); c.fillStyle=col; c.fill(); a0=a1;
+  });
+  if(!T.total){ c.beginPath(); c.arc(dx,dy,R1,0,Math.PI*2); c.fillStyle=C.soft; c.fill(); }
+  c.beginPath(); c.arc(dx,dy,R2,0,Math.PI*2); c.fillStyle="#fff"; c.fill();
+  c.fillStyle=C.green; c.font=`800 40px ${F}`; c.fillText(pct(T.p,T.total),dx,dy-8);
+  c.fillStyle=C.muted; c.font=`600 17px ${F}`; c.fillText("نسبة الحضور",dx,dy+30);
+  [["حضور",C.green,T.p],["غياب",C.red,T.a]].forEach(([t,col,v],i)=>{
+    const y=dy+R1+40+i*32;
+    c.fillStyle=col; roundRect(c,dx+70,y-10,20,20,5); c.fill();
+    c.fillStyle="#1B2140"; c.textAlign="right"; c.font=`700 18px ${F}`; c.fillText(`${t}: ${v} (${pct(v,T.total)})`,dx+60,y);
+  });
+  c.fillStyle=C.soft; c.fillRect(0,H-64,W,64);
+  c.fillStyle=C.navy; c.textAlign="center"; c.font=`700 19px ${F}`;
+  c.fillText(`غيّروا قاعاتهم: ${T.moved}   |   بدون وثيقة إثبات شخصية: ${L.noid.length}   |   تقديم شرطي: ${T.cond}   |   لم يُتفقدوا (حُسبوا غياباً): ${T.un}`,W/2,H-32);
+}
+function roundRect(c,x,y,w,h,r,topOnly){
+  r=Math.min(r,h/2,w/2); c.beginPath();
+  c.moveTo(x+r,y); c.lineTo(x+w-r,y); c.quadraticCurveTo(x+w,y,x+w,y+r);
+  if(topOnly){ c.lineTo(x+w,y+h); c.lineTo(x,y+h); }
+  else { c.lineTo(x+w,y+h-r); c.quadraticCurveTo(x+w,y+h,x+w-r,y+h); c.lineTo(x+r,y+h); c.quadraticCurveTo(x,y+h,x,y+h-r); }
+  c.lineTo(x,y+r); c.quadraticCurveTo(x,y,x+r,y); c.closePath();
+}
+function niceStep(m){ for(const s of [1,2,5,10,20,25,50,100]) if(m/s<=8) return s; return 200; }
+
+/* ================= الملفات والتقارير ================= */
+const stamp = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}_${String(d.getHours()).padStart(2,"0")}${String(d.getMinutes()).padStart(2,"0")}`; };
+function downloadBlob(blob,name){
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);
+}
+function exportPNG(){
+  const {per,T,L}=compute(); const cv=$("chart"); drawChart(cv,per,T,L);
+  cv.toBlob(b=>downloadBlob(b,`إحصائيات-التفقد-${stamp()}.png`),"image/png");
+}
+$("btn-png").onclick=exportPNG; $("btn-png2").onclick=exportPNG;
+
+$("btn-csv").onclick=()=>{
+  const st={p:"حاضر",a:"غائب","":"غائب (لم يُتفقد)"};
+  const rows=[["م","الاسم","الرقم الامتحاني","الاختصاص","القاعة الأصلية","الحالة","قاعة الحضور","غيّر قاعته","تقديم شرطي","ميدالية","ملاحظات","آخر تعديل","بواسطة"]];
+  all().forEach((s,i)=>{ const r=R(s.id);
+    rows.push([i+1,s.name,s.num,SUBJECTS[s.s]?.name||"",s.hall,st[r.st||""],r.st==="p"?(r.hall||s.hall):"",r.st==="p"&&r.hall&&r.hall!==s.hall?"نعم":"",s.cond?"نعم":"",MEDAL.has(s.num)?"نعم":"",r.note==="id"?NOTES.id:r.note==="other"?(r.txt||""):"",r.t?fmtTime(r.t):"",r.by||""]);
+  });
+  const csv="﻿"+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  downloadBlob(new Blob([csv],{type:"text/csv;charset=utf-8"}),`التفقد-${stamp()}.csv`);
+};
+$("btn-backup").onclick=()=>{
+  downloadBlob(new Blob([JSON.stringify({exam:EXAM_ID,at:Date.now(),recs:S.recs,conds:S.conds,finished:S.finished})],{type:"application/json"}),`نسخة-احتياطية-التفقد-${stamp()}.json`);
+};
+
+$("btn-print").onclick=async()=>{
+  try{ await document.fonts.ready; }catch(e){}
+  const {per,T,L}=compute(); const cv=$("chart"); drawChart(cv,per,T,L);
+  const img=cv.toDataURL("image/png");
+  const tbl=(rows,cols)=>rows.length?`<table><thead><tr><th>م</th>${cols.map(c=>`<th>${c[0]}</th>`).join("")}</tr></thead><tbody>${rows.map((s,i)=>`<tr><td>${i+1}</td>${cols.map(c=>`<td>${c[1](s)}</td>`).join("")}</tr>`).join("")}</tbody></table>`:`<p>لا يوجد.</p>`;
+  const nm=s=>esc(s.name), num=s=>esc(s.num||"—"), sub=s=>SUBJECTS[s.s]?.name||"—", hall=s=>s.hall;
+  const stx=s=>{const r=R(s.id); return r.st==="p"?`حاضر${r.hall&&r.hall!==s.hall?" ("+r.hall+")":""}`:"غائب";};
+  const absentByHall = HALL_ORDER.map(h=>{ const rows=L.absent.filter(s=>s.hall===h); return `<h3 style="margin:10px 0 4px;font-size:11pt">${h} — ${rows.length} غائباً</h3>${tbl(rows,[["الاسم الثلاثي",nm],["الرقم الامتحاني",num],["الاختصاص",sub],["ملاحظة",s=>R(s.id).st?"":"لم يُتفقد"]])}`; }).join("");
+  $("print").innerHTML = `
+    <div class="p-head"><div><h1>تقرير الحضور والغياب – المرحلة الأولى 2027</h1><div>مكتب الأولمبياد العلمي السوري – درعا | ${CENTER}</div></div><div>${fmtTime(Date.now())}</div></div>
+    <h2>الملخص</h2>
+    <p>العدد الكلي: <b>${T.total}</b> — الحضور: <b>${T.p}</b> (${pct(T.p,T.total)}) — الغياب: <b>${T.a}</b> (${pct(T.a,T.total)}) — غيّروا قاعاتهم: <b>${T.moved}</b> — بدون وثيقة: <b>${L.noid.length}</b> — تقديم شرطي: <b>${T.cond}</b>${T.un?` — لم يُتفقدوا (حُسبوا غياباً): <b>${T.un}</b>`:""}</p>
+    ${hallTable(per,T)}
+    <img src="${img}" alt="المخطط البياني" style="margin-top:10px">
+    <h2 class="pb">أسماء الطلاب الغائبين (${L.absent.length})</h2>${absentByHall}
+    <h2>الطلاب الذين غيّروا قاعاتهم (${L.moved.length})</h2>${tbl(L.moved,[["الاسم الثلاثي",nm],["الرقم الامتحاني",num],["القاعة الأصلية",hall],["القاعة التي حضر فيها",s=>R(s.id).hall]])}
+    <h2>الطلاب الذين لا يملكون وثيقة إثبات شخصية (${L.noid.length})</h2>${tbl(L.noid,[["الاسم الثلاثي",nm],["الرقم الامتحاني",num],["القاعة",hall],["الحالة",stx]])}
+    <h2>الطلاب الحاصلون على ميدالية في مسار اليافعين (${L.medal.length})</h2>${tbl(L.medal,[["الاسم الثلاثي",nm],["الرقم الامتحاني",num],["الاختصاص",sub],["القاعة",hall],["الحالة",stx]])}
+    <h2>الطلاب المقدّمون بشكل شرطي (${L.cond.length})</h2>${tbl(L.cond,[["الاسم الثلاثي",nm],["الرقم الامتحاني",num],["الاختصاص",sub],["القاعة",hall],["ملاحظة",s=>R(s.id).note==="id"?NOTES.id:esc(R(s.id).txt||"")]])}
+    <h2>ملاحظات أخرى (${L.other.length})</h2>${tbl(L.other,[["الاسم الثلاثي",nm],["الرقم الامتحاني",num],["القاعة",hall],["الملاحظة",s=>esc(R(s.id).txt||"")]])}
+    <div class="sig"><span>رئيس المركز الامتحاني: ....................</span><span>التوقيع: ....................</span></div>`;
+  const old=document.title; document.title=`تقرير-التفقد-${stamp()}`;
+  setTimeout(()=>{ window.print(); document.title=old; },300);
+};
+
+$("btn-reset").onclick=async()=>{
+  if(!confirm("سيتم حذف كل بيانات التفقد من قاعدة البيانات لكل الأجهزة. هل أنت متأكد؟")) return;
+  if(prompt("للتأكيد اكتب كلمة: مسح")!=="مسح") return;
+  try{ await BE.resetAll(); toast("تم المسح"); }catch(e){ alert("تعذّر المسح: "+(e.code||e.message)); }
+};
+
+/* ================= الإعدادات ================= */
+function renderSettings(){
+  $("s-name").value = PREF.name||"";
+  if(BE && BE.mode==="local"){
+    $("s-admin").innerHTML = `<p class="muted">الوضع المحلي: كل الصلاحيات مفعّلة على هذا الجهاز.</p>`;
+  } else if(IS_ADMIN){
+    $("s-admin").innerHTML = `<p>أنت مسجّل كمسؤول ✔</p><button class="btn ghost sm" id="adm-out">تسجيل الخروج</button>`;
+    $("adm-out").onclick=async()=>{ await BE.adminLogout(); toast("تم تسجيل الخروج"); renderSettings(); };
+  } else {
+    $("s-admin").innerHTML = `<div class="field" style="margin-top:0"><label>كلمة مرور المسؤول</label><input id="adm-pw" type="password" dir="ltr" autocomplete="current-password"></div>
+      <button class="btn pri sm" id="adm-in" style="margin-top:10px">دخول</button>`;
+    $("adm-in").onclick=async()=>{
+      try{ await BE.adminLogin($("adm-pw").value); toast("مرحباً بك 👑"); go("admin"); }
+      catch(e){ alert("فشل الدخول: "+e.message); }
+    };
+  }
+  const st = BE?.mode==="local" ? "وضع محلي (بدون سيرفر)" : SYNC.error==="code" ? "رمز الدخول غير صحيح" : !SYNC.connected ? "غير متصل — التعديلات محفوظة على الجهاز وستُرسل تلقائياً عند عودة الاتصال" : SYNC.pending ? `متصل — جارٍ إرسال ${SYNC.pending} تعديل` : "متصل ومتزامن ✔";
+  $("s-status").innerHTML = `${st}<br>رمز الجهاز: ${PREF.dev}`+(BE?.mode==="server"?`<div class="field"><label>رمز دخول المراقبين</label><input id="s-code" dir="ltr" value="${esc(BE.getCode())}"></div><button class="btn ghost sm" id="s-code-save" style="margin-top:8px">حفظ الرمز</button>`:"");
+  if($("s-code-save")) $("s-code-save").onclick=()=>{ BE.setCode($("s-code").value.trim()); toast("تم الحفظ ✔"); };
+}
+$("s-name-save").onclick=()=>{ PREF.name=$("s-name").value.trim(); lsSet(PREF_KEY,PREF); updateRoleUI(); toast("تم الحفظ ✔"); };
+
+function askName(){
+  if(PREF.name) return;
+  const m=$("modal");
+  m.innerHTML=`<div class="box"><h3>أهلاً بك 👋</h3><p class="muted" style="margin:0">اكتب اسمك ليظهر مع كل عملية تفقد تقوم بها.</p>
+    <div class="field"><label>اسم المراقب</label><input id="n-name" autocomplete="name"></div>
+    <div class="row"><button class="btn pri" id="n-ok">متابعة</button></div></div>`;
+  m.classList.remove("hidden"); $("n-name").focus();
+  const ok=()=>{ const v=$("n-name").value.trim(); if(!v){$("n-name").focus();return;} PREF.name=v; lsSet(PREF_KEY,PREF); m.classList.add("hidden"); updateRoleUI(); render(true); };
+  $("n-ok").onclick=ok; $("n-name").addEventListener("keydown",e=>{ if(e.key==="Enter") ok(); });
+}
+
+/* ================= بدء التشغيل ================= */
+(async function boot(){
+  if(location.protocol==="file:"){
+    BE = LocalBackend(); IS_ADMIN=true;
+    $("banner").innerHTML = `<div class="warn">💾 وضع تجريبي: الملف مفتوح من الجهاز مباشرة، والبيانات تُحفظ هنا فقط. افتحه من رابط موقع Render للمزامنة.</div>`;
+  } else {
+    BE = ServerBackend();
+  }
+  await BE.start();
+  updateRoleUI(); renderSync(); go(view);
+  askName();
+  if(document.fonts) document.fonts.ready.then(()=>{ if(view==="stats") renderStats(); });
+  if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+})();
+window.__dbg = {S,compute,setRec:(...a)=>setRec(...a)};
+</script>
+</body>
+</html>
