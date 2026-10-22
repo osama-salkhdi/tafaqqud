@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14206B">
-<title>نظام التفقد الإلكتروني – المرحلة الأولى 2027 | الأولمبياد العلمي السوري – درعا</title>
+<title>نظام التفقد الإلكتروني – المرحلة الأولى 2026 | الأولمبياد العلمي السوري – درعا</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -213,7 +213,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px 16px 30
 </head>
 <body>
 
-<div class="topbar">اختبارات المرحلة الأولى | الأولمبياد العلمي السوري 2027 | محافظة درعا</div>
+<div class="topbar">اختبارات المرحلة الأولى | الأولمبياد العلمي السوري 2026 | محافظة درعا</div>
 <header class="site">
   <div class="wrap brand">
     <div class="logos">
@@ -351,6 +351,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px 16px 30
 <script>
 /* النسخة المتصلة بسيرفر Render: تعمل تلقائياً عند فتحها من رابط الموقع.
    عند فتح الملف مباشرة من الجهاز (file://) تعمل بوضع تجريبي محلي. */
+const EXAM_ID = "daraa-2026-stage1";   // اسم يظهر في ملف النسخة الاحتياطية فقط
 const CENTER = "جامعة درعا - كلية التربية الثالثة";
 const SUBJECTS = {
   M:{name:"الرياضيات",color:"#14206B",bg:"#E8EBF7"},
@@ -1167,7 +1168,7 @@ function drawChart(cv,per,T,L){
   c.fillStyle=C.navy; c.fillRect(0,0,W,96);
   c.fillStyle=C.gold; c.fillRect(0,96,W,5);
   c.fillStyle="#fff"; c.textAlign="center"; c.textBaseline="middle";
-  c.font=`800 32px ${F}`; c.fillText("إحصائيات التفقد – المرحلة الأولى 2027",W/2,38);
+  c.font=`800 32px ${F}`; c.fillText("إحصائيات التفقد – المرحلة الأولى 2026",W/2,38);
   c.font=`600 19px ${F}`; c.fillText("مكتب الأولمبياد العلمي السوري – درعا  |  "+CENTER+"  |  "+fmtTime(Date.now()),W/2,74);
   const k=[["العدد الكلي",T.total,C.navy],["الحضور",T.p,C.green],["الغياب",T.a,C.red],["نسبة الحضور",pct(T.p,T.total),C.green],["نسبة الغياب",pct(T.a,T.total),C.red]];
   const kw=(W-60-4*14)/5;
@@ -1261,7 +1262,7 @@ $("btn-print").onclick=async()=>{
   const stx=s=>{const r=R(s.id); return r.st==="p"?`حاضر${r.hall&&r.hall!==s.hall?" ("+r.hall+")":""}`:"غائب";};
   const absentByHall = HALL_ORDER.map(h=>{ const rows=L.absent.filter(s=>s.hall===h); return `<h3 style="margin:10px 0 4px;font-size:11pt">${h} — ${rows.length} غائباً</h3>${tbl(rows,[["الاسم الثلاثي",nm],["الرقم الامتحاني",num],["الاختصاص",sub],["ملاحظة",s=>R(s.id).st?"":"لم يُتفقد"]])}`; }).join("");
   $("print").innerHTML = `
-    <div class="p-head"><div><h1>تقرير الحضور والغياب – المرحلة الأولى 2027</h1><div>مكتب الأولمبياد العلمي السوري – درعا | ${CENTER}</div></div><div>${fmtTime(Date.now())}</div></div>
+    <div class="p-head"><div><h1>تقرير الحضور والغياب – المرحلة الأولى 2026</h1><div>مكتب الأولمبياد العلمي السوري – درعا | ${CENTER}</div></div><div>${fmtTime(Date.now())}</div></div>
     <h2>الملخص</h2>
     <p>العدد الكلي: <b>${T.total}</b> — الحضور: <b>${T.p}</b> (${pct(T.p,T.total)}) — الغياب: <b>${T.a}</b> (${pct(T.a,T.total)}) — غيّروا قاعاتهم: <b>${T.moved}</b> — بدون وثيقة: <b>${L.noid.length}</b> — تقديم شرطي: <b>${T.cond}</b>${T.un?` — لم يُتفقدوا (حُسبوا غياباً): <b>${T.un}</b>`:""}</p>
     ${hallTable(per,T)}
