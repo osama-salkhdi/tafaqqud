@@ -1,7 +1,7 @@
 databases:
   - name: tafaqqud-db
     plan: free
-    region: frankfurt
+    region: oregon
     databaseName: tafaqqud
     user: tafaqqud
 
