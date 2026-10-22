@@ -1,0 +1,31 @@
+databases:
+  - name: tafaqqud-db
+    plan: free
+    region: frankfurt
+    databaseName: tafaqqud
+    user: tafaqqud
+
+services:
+  - type: web
+    name: tafaqqud
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install -r requirements.txt && python manage.py migrate --noinput
+    startCommand: gunicorn tafaqqud.wsgi:application --workers 2 --threads 4 --timeout 60
+    healthCheckPath: /api/ping
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tafaqqud-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: EXAM_ID
+        value: daraa-2027-stage1
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ACCESS_CODE
+        sync: false
